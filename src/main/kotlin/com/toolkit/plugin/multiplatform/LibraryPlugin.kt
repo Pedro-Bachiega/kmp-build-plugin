@@ -29,11 +29,11 @@ internal class LibraryPlugin : Plugin<Project> {
         val android = androidLibrary ?: return@with
         val kotlin = kotlinMultiplatform ?: return@with
         setupAndroid(android, kotlin)
-        kotlin.jvm()
-//        kotlin.wasmJs { browser() }
+        kotlin.setupTargets()
+        // kotlin.wasmJs { browser() }
 
-        plugins.apply("toolkit-lint")
-        plugins.apply("toolkit-optimize")
+        plugins.apply("plugin-lint")
+        plugins.apply("plugin-optimize")
     }
 
     private fun Project.setupAndroid(
@@ -70,5 +70,62 @@ internal class LibraryPlugin : Plugin<Project> {
             maybeCreate("androidTest").java.srcDirs("src/androidTest/kotlin")
             maybeCreate("androidTest").resources.srcDirs("src/androidTest/res")
         }
+    }
+
+    private fun KotlinMultiplatformExtension.setupTargets() {
+//        wasmJs()
+//        wasmWasi()
+
+        jvm()
+//        js(IR) {
+//            this.nodejs()
+//            binaries.executable() // not applicable to BOTH, see details below
+//        }
+        androidTarget {
+            publishLibraryVariants("release", "debug")
+        }
+//        androidNativeArm32()
+//        androidNativeArm64()
+//        androidNativeX86()
+//        androidNativeX64()
+
+//        iosArm64()
+//        iosX64()
+//        iosSimulatorArm64()
+//        watchosArm32()
+//        watchosArm64()
+//        watchosX64()
+//        watchosSimulatorArm64()
+//        tvosArm64()
+//        tvosX64()
+//        tvosSimulatorArm64()
+//        macosX64()
+//        macosArm64()
+//        linuxX64 {
+//            binaries {
+//                executable()
+//            }
+//        }
+//        linuxArm64 {
+//            binaries {
+//                executable()
+//            }
+//        }
+//        listOf(
+//            iosX64(),
+//            iosArm64(),
+//            iosSimulatorArm64(),
+//            watchosArm32(),
+//            watchosArm64(),
+//            watchosSimulatorArm64(),
+//            tvosArm64(),
+//            tvosX64(),
+//            tvosSimulatorArm64(),
+//        ).forEach {
+//            it.binaries.framework { baseName = "library" }
+//        }
+//
+//        mingwX64()
+        applyDefaultHierarchyTemplate()
     }
 }

@@ -9,7 +9,7 @@ import com.toolkit.plugin.util.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
-internal class ToolkitOptimizeDependenciesAndFilterTasksPlugin : Plugin<Project> {
+internal class OptimizeDependenciesAndFilterTasksPlugin : Plugin<Project> {
 
     @Suppress("SpreadOperator")
     override fun apply(target: Project) {

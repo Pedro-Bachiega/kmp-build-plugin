@@ -31,9 +31,9 @@ internal class ApplicationPlugin : Plugin<Project> {
 
         setup(android)
 
-        plugins.apply("toolkit-lint")
-        plugins.apply("toolkit-test")
-        plugins.apply("toolkit-optimize")
+        plugins.apply("plugin-lint")
+        plugins.apply("plugin-test")
+        plugins.apply("plugin-optimize")
     }
 
     private fun Project.setup(android: ApplicationExtension) = with(android) {

@@ -13,7 +13,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import java.io.File
 
-internal class ToolkitLintPlugin : Plugin<Project> {
+internal class LintPlugin : Plugin<Project> {
 
     override fun apply(target: Project): Unit = with(target) {
         applyPlugins("lint-detekt", "lint-ktlint")

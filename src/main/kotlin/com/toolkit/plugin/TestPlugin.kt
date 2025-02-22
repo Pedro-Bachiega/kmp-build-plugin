@@ -12,7 +12,7 @@ import com.toolkit.plugin.util.version
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
-internal class ToolkitTestPlugin : Plugin<Project> {
+internal class TestPlugin : Plugin<Project> {
 
     override fun apply(target: Project): Unit = with(target) {
         plugins.apply("jacoco")
@@ -24,7 +24,7 @@ internal class ToolkitTestPlugin : Plugin<Project> {
                 val flavors = androidApplication?.productFlavors ?: androidLibrary?.productFlavors
                 flavors?.forEach { add("${it.name}Debug") } ?: add("debug")
 
-                if (plugins.hasPlugin("toolkit-desktop-application") || plugins.hasPlugin("toolkit-multiplatform-library")) {
+                if (plugins.hasPlugin("plugin-desktop-application") || plugins.hasPlugin("plugin-multiplatform-library")) {
                     add("jvm")
                 }
             }

@@ -16,10 +16,7 @@ internal class ComposePlugin : Plugin<Project> {
         )
 
         kotlinMultiplatform?.let(::setupDefaultDependencies)
-        (androidApplication ?: androidLibrary)?.let(::setupAndroid) ?: return@with
-    }
-
-    private fun setupAndroid(android: CommonExtension<*, *, *, *, *, *>) = with(android) {
-        buildFeatures.compose = true
+        (androidApplication ?: androidLibrary)?.run { buildFeatures.compose = true }
+            ?: return@with
     }
 }

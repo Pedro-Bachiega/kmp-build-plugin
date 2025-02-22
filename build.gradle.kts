@@ -20,6 +20,7 @@ dependencies {
     implementation(libs.plugin.androidx.plugin)
     implementation(libs.plugin.lint.detekt)
     implementation(libs.plugin.lint.ktlint)
+    implementation(libs.plugin.jetbrains.dokka)
     implementation(libs.plugin.jetbrains.kotlin.plugin)
     implementation(libs.plugin.jetbrains.extensions)
     implementation(libs.plugin.jetbrains.kover)
@@ -35,24 +36,17 @@ sourceSets {
 gradlePlugin {
     plugins {
         //region Android
-        create("toolkit-android-application") {
-            id = "toolkit-android-application"
+        create("plugin-android-application") {
+            id = "plugin-android-application"
             displayName = "Android Application Plugin"
             description = "\\o/"
             implementationClass = "com.toolkit.plugin.android.ApplicationPlugin"
         }
-
-        create("toolkit-android-library") {
-            id = "toolkit-android-library"
-            displayName = "Android Library Plugin"
-            description = "\\o/"
-            implementationClass = "com.toolkit.plugin.android.LibraryPlugin"
-        }
         //endregion
 
         //region Browser
-        create("toolkit-browser-application") {
-            id = "toolkit-browser-application"
+        create("plugin-browser-application") {
+            id = "plugin-browser-application"
             displayName = "Browser Application Plugin"
             description = "\\o/"
             implementationClass = "com.toolkit.plugin.browser.ApplicationPlugin"
@@ -60,8 +54,8 @@ gradlePlugin {
         //endregion
 
         //region Desktop
-        create("toolkit-desktop-application") {
-            id = "toolkit-desktop-application"
+        create("plugin-desktop-application") {
+            id = "plugin-desktop-application"
             displayName = "Desktop Application Plugin"
             description = "\\o/"
             implementationClass = "com.toolkit.plugin.desktop.ApplicationPlugin"
@@ -69,41 +63,56 @@ gradlePlugin {
         //endregion
 
         //region Multiplatform
-        create("toolkit-multiplatform-library") {
-            id = "toolkit-multiplatform-library"
-            displayName = "Desktop Library Plugin"
+        create("plugin-multiplatform-library") {
+            id = "plugin-multiplatform-library"
+            displayName = "Multiplatform Library Plugin"
             description = "\\o/"
             implementationClass = "com.toolkit.plugin.multiplatform.LibraryPlugin"
+        }
+        create("plugin-multiplatform-publish") {
+            id = "plugin-multiplatform-publish"
+            displayName = "Multiplatform Publish Plugin"
+            description = "\\o/"
+            implementationClass = "com.toolkit.plugin.multiplatform.PublishPlugin"
+        }
+        //endregion
+
+        //region Gradle
+        create("plugin-gradle-publish") {
+            id = "plugin-gradle-publish"
+            displayName = "Gradle Publish Plugin"
+            description = "\\o/"
+            implementationClass = "com.toolkit.plugin.gradle.PublishPlugin"
         }
         //endregion
 
         //region Generic
-        create("toolkit-compose") {
-            id = "toolkit-compose"
+        create("plugin-compose") {
+            id = "plugin-compose"
             displayName = "Toolkit Compose Plugin"
             description = "Compose Plugin"
             implementationClass = "com.toolkit.plugin.ComposePlugin"
         }
-        create("toolkit-optimize") {
-            id = "toolkit-optimize"
+        create("plugin-optimize") {
+            id = "plugin-optimize"
             displayName = "Toolkit Optimization Plugin"
             description = "Optimize dependencies"
             implementationClass =
-                "com.toolkit.plugin.ToolkitOptimizeDependenciesAndFilterTasksPlugin"
+                "com.toolkit.plugin.OptimizeDependenciesAndFilterTasksPlugin"
         }
 
-        create("toolkit-lint") {
-            id = "toolkit-lint"
+        create("plugin-lint") {
+            id = "plugin-lint"
             displayName = "Toolkit Lint Plugin"
             description = "Enables and configure lint for module"
-            implementationClass = "com.toolkit.plugin.ToolkitLintPlugin"
+            implementationClass = "com.toolkit.plugin.LintPlugin"
         }
 
-        create("toolkit-test") {
-            id = "toolkit-test"
+        create("plugin-test") {
+            id = "plugin-test"
             displayName = "Toolkit Test Plugin"
             description = "Enables and configure test for module"
-            implementationClass = "com.toolkit.plugin.ToolkitTestPlugin"
+            implementationClass = "com.toolkit.plugin.TestPlugin"
         }
         //endregion
     }

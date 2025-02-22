@@ -14,3 +14,9 @@ internal val VersionCatalog.allDefinedDependencies: List<String>
                 ?.let { version -> "${module.group}:${module.name}:$version" }
         }
     }.toList()
+
+internal fun VersionCatalog.getPluginId(alias: String) = try {
+    findPlugin(alias).get().get().pluginId
+} catch (e: Exception) {
+    throw IllegalArgumentException("No plugin found with alias: $alias", e)
+}

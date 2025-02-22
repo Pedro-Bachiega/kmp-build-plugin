@@ -21,7 +21,7 @@ internal class ApplicationPlugin : Plugin<Project> {
             jvm()
         }
 
-        plugins.apply("toolkit-lint")
-        plugins.apply("toolkit-optimize")
+        plugins.apply("plugin-lint")
+        plugins.apply("plugin-optimize")
     }
 }

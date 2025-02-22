@@ -10,6 +10,9 @@ import kotlinx.kover.gradle.plugin.dsl.KoverProjectExtension
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.artifacts.VersionCatalogsExtension
+import org.gradle.api.publish.PublishingExtension
+import org.gradle.plugin.devel.GradlePluginDevelopmentExtension
+import org.gradle.plugins.signing.SigningExtension
 import org.gradle.testing.jacoco.plugins.JacocoPluginExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
@@ -22,6 +25,11 @@ internal val Project.kotlinAndroid: KotlinAndroidProjectExtension?
 internal val Project.kotlinMultiplatform: KotlinMultiplatformExtension?
     get() = extensions.findByType(KotlinMultiplatformExtension::class.java)
 // endregion JetBrains
+
+// region Gradle
+internal val Project.gradlePlugin: GradlePluginDevelopmentExtension?
+    get() = extensions.findByType(GradlePluginDevelopmentExtension::class.java)
+// endregion Gradle
 
 internal val Project.libs: VersionCatalog
     @Throws(IllegalStateException::class)
@@ -74,18 +82,19 @@ internal val Project.applicationComponent: ApplicationAndroidComponentsExtension
     get() = extensions.findByType(ApplicationAndroidComponentsExtension::class.java)
         ?: error("Project does not implement android-application plugin!")
 
-//internal val Project.publishing: PublishingExtension
-//    @Throws(IllegalStateException::class)
-//    get() = extensions.findByType(PublishingExtension::class.java)
-//        ?: error("Project does not implement maven-publish plugin!")
+internal val Project.publishing: PublishingExtension
+    @Throws(IllegalStateException::class)
+    get() = extensions.findByType(PublishingExtension::class.java)
+        ?: error("Project does not implement maven-publish plugin!")
 
-//internal val Project.sign: SigningExtension
-//    @Throws(IllegalStateException::class)
-//    get() = extensions.findByType(SigningExtension::class.java)
-//        ?: error("Project does not implement signing plugin!")
+internal val Project.sign: SigningExtension
+    @Throws(IllegalStateException::class)
+    get() = extensions.findByType(SigningExtension::class.java)
+        ?: error("Project does not implement signing plugin!")
 
 internal fun Project.applyPlugins(vararg id: String) {
-    id.forEach {
-        plugins.apply(libs.findPlugin(it).get().get().pluginId)
-    }
+    id.forEach { plugins.apply(libs.getPluginId(it)) }
 }
+
+internal fun Project.hasPlugins(vararg id: String) =
+    id.all { plugins.hasPlugin(libs.getPluginId(it)) }

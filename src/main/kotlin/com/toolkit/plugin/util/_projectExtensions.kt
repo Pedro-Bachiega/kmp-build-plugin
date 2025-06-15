@@ -5,12 +5,14 @@ import com.android.build.api.dsl.LibraryExtension
 import com.android.build.api.variant.ApplicationAndroidComponentsExtension
 import com.android.build.api.variant.LibraryAndroidComponentsExtension
 import com.android.build.gradle.BaseExtension
+import com.vanniktech.maven.publish.MavenPublishBaseExtension
 import io.gitlab.arturbosch.detekt.extensions.DetektExtension
 import kotlinx.kover.gradle.plugin.dsl.KoverProjectExtension
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.publish.PublishingExtension
+import org.gradle.api.publish.maven.plugins.MavenPublishPlugin
 import org.gradle.plugin.devel.GradlePluginDevelopmentExtension
 import org.gradle.plugins.signing.SigningExtension
 import org.gradle.testing.jacoco.plugins.JacocoPluginExtension
@@ -86,6 +88,11 @@ internal val Project.publishing: PublishingExtension
     @Throws(IllegalStateException::class)
     get() = extensions.findByType(PublishingExtension::class.java)
         ?: error("Project does not implement maven-publish plugin!")
+
+internal val Project.vanniktechPublishing: MavenPublishBaseExtension
+    @Throws(IllegalStateException::class)
+    get() = extensions.findByType(MavenPublishBaseExtension::class.java)
+        ?: error("Project does not implement vanniktech-publish plugin!")
 
 internal val Project.sign: SigningExtension
     @Throws(IllegalStateException::class)

@@ -82,7 +82,7 @@ internal class LibraryPlugin : Plugin<Project> {
 //            binaries.executable() // not applicable to BOTH, see details below
 //        }
         androidTarget {
-            publishLibraryVariants("release", "debug")
+            publishLibraryVariants("release")
         }
 //        androidNativeArm32()
 //        androidNativeArm64()

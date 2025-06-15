@@ -20,10 +20,11 @@ dependencies {
     implementation(libs.plugin.androidx.plugin)
     implementation(libs.plugin.lint.detekt)
     implementation(libs.plugin.lint.ktlint)
-    implementation(libs.plugin.jetbrains.dokka)
+//    implementation(libs.plugin.jetbrains.dokka)
     implementation(libs.plugin.jetbrains.kotlin.plugin)
     implementation(libs.plugin.jetbrains.extensions)
     implementation(libs.plugin.jetbrains.kover)
+    implementation(libs.plugin.vanniktech.publish)
 }
 
 sourceSets {

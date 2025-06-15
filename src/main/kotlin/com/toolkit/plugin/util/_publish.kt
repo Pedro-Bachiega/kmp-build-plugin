@@ -20,8 +20,6 @@ internal fun RepositoryHandler.createSonatypeRepository(project: Project) {
     )
     if (missingVariables.isNotEmpty()) {
         error("Skipping sonatype repository. Reason:\nMissing env variables: ${missingVariables.joinToString()}")
-//        println("Skipping sonatype repository. Reason:\nMissing env variables: ${missingVariables.joinToString()}")
-//        return
     }
 
     maven {

@@ -2,7 +2,6 @@ package com.toolkit.plugin.util
 
 import org.gradle.api.Project
 import org.gradle.jvm.tasks.Jar
-import org.jetbrains.dokka.gradle.DokkaTask
 
 internal fun Project.setupJavadocAndSources() {
     setupSources()
@@ -10,12 +9,12 @@ internal fun Project.setupJavadocAndSources() {
 }
 
 private fun Project.setupJavadoc() {
-    applyPlugins("jetbrains-dokka")
+//    applyPlugins("jetbrains-dokka")
     tasks.register("javadocJar", Jar::class.java) {
         group = "documentation"
-        val dokka = project.tasks.named("dokkaHtml", DokkaTask::class.java)
-        dependsOn(dokka)
-        from(dokka.flatMap(DokkaTask::outputDirectory))
+//        val dokka = project.tasks.named("dokkaHtml", DokkaTask::class.java)
+//        dependsOn(dokka)
+//        from(dokka.flatMap(DokkaTask::outputDirectory))
         archiveClassifier.set("javadoc")
         archiveFileName.set("${project.name}-release-javadoc.jar")
     }

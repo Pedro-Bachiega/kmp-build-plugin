@@ -8,7 +8,7 @@ plugins {
     id(libs.plugins.quality.jacoco.get().pluginId)
 }
 
-kotlin { jvmToolchain(17) }
+kotlin { jvmToolchain(21) }
 jacoco { toolVersion = libs.versions.jacoco.get() }
 
 group = "com.toolkit.plugin"

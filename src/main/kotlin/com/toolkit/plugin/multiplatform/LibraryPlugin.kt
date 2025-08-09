@@ -25,12 +25,7 @@ internal class LibraryPlugin : Plugin<Project> {
         )
 
         kotlinExtension.jvmToolchain(projectJavaVersionCode)
-
-        val android = androidLibrary ?: return@with
-        val kotlin = kotlinMultiplatform ?: return@with
-        setupAndroid(android, kotlin)
-        kotlin.setupTargets()
-        // kotlin.wasmJs { browser() }
+        target.setupTargets(kotlinMultiplatform ?: return@with)
 
         plugins.apply("plugin-lint")
         plugins.apply("plugin-optimize")
@@ -72,7 +67,9 @@ internal class LibraryPlugin : Plugin<Project> {
         }
     }
 
-    private fun KotlinMultiplatformExtension.setupTargets() {
+    private fun Project.setupTargets(kotlin: KotlinMultiplatformExtension) = with(kotlin) {
+        androidLibrary?.let { setupAndroid(it, kotlin) }
+
 //        wasmJs()
 //        wasmWasi()
 
@@ -126,6 +123,6 @@ internal class LibraryPlugin : Plugin<Project> {
 //        }
 //
 //        mingwX64()
-        applyDefaultHierarchyTemplate()
+//        applyDefaultHierarchyTemplate()
     }
 }

@@ -4,8 +4,8 @@ import org.apache.tools.ant.taskdefs.condition.Os
 import org.gradle.api.Project
 import java.io.File
 
-internal val Project.versionName: String
-    get() = runGitCommand(
+val Project.versionName: String
+    get() = versionNameProperty ?: runGitCommand(
         fileName = "version-name.txt",
         command = "git describe",
         default = "0.0.1",
@@ -20,41 +20,22 @@ private val String.executeWithText: String?
         return process.text
     }
 
-fun Project.runGitCommand(
-    fileName: String,
-    command: String,
-    default: String,
-): String {
+fun Project.runGitCommand(fileName: String, command: String, default: String): String {
     val file = File("$rootDir/build", fileName)
-    return when {
-        file.exists().not() -> {
-            when {
-                validateGit() -> {
-                    val output = command.executeWithText
-                    if (output.isNullOrBlank()) {
-                        default
-                    } else {
-                        file.parentFile.mkdirs()
-                        file.writeText(output)
-                        output
-                    }
-                }
+    if (file.exists()) return file.readText().trim()
+    if (validateGit().not()) return default
 
-                else -> default
-            }
-        }
-
-        else -> file.readText().trim()
+    val output = command.executeWithText
+    return if (output.isNullOrBlank()) {
+        default
+    } else {
+        file.parentFile.mkdirs()
+        output.also(file::writeText)
     }
 }
 
 private fun validateGit(): Boolean {
-    val command = when {
-        Os.isFamily(Os.FAMILY_WINDOWS) -> "git --version"
-        else -> "whereis git"
-    }
-    return when (val output = command.executeWithText) {
-        null -> false
-        else -> (output.isEmpty() || output == "git:").not()
-    }
+    val command = if (Os.isFamily(Os.FAMILY_WINDOWS)) "git --version" else "whereis git"
+    val output = command.executeWithText
+    return (output.isNullOrEmpty() || output == "git:").not()
 }

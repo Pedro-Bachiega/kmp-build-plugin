@@ -20,10 +20,10 @@ internal class ApplicationPlugin : Plugin<Project> {
 
         kotlinExtension.jvmToolchain(projectJavaVersionCode)
         kotlinMultiplatform?.wasmJs {
-            outputModuleName.set("LuliBrowserApp")
+            outputModuleName.set("BrowserApp")
             browser {
                 commonWebpackConfig {
-                    outputFileName = "luliBrowserApp.js"
+                    outputFileName = "browserApp.js"
                     devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
                         static = (static ?: mutableListOf()).apply {
                             add(project.projectDir.path)

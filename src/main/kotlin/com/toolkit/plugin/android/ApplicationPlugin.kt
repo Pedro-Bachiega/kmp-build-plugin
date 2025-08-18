@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 package com.toolkit.plugin.android
 
 import com.android.build.api.dsl.ApplicationExtension
@@ -51,8 +53,7 @@ internal class ApplicationPlugin : Plugin<Project> {
             versionCode = libs.version("build-version-code").toInt()
             versionName = libs.version("build-version-name")
 
-            resourceConfigurations.add("en")
-            resourceConfigurations.add("pt")
+            androidResources.localeFilters += listOf("en-US", "pt-BR")
         }
 
         // TODO Config json for buildTypes and flavors

@@ -11,8 +11,11 @@ val Project.versionName: String
         default = "0.0.1",
     )
 
-private val String.execute: Process get() = Runtime.getRuntime().exec(this)
+private val String.execute: Process
+    get() = Runtime.getRuntime().exec(this.split(" ").toTypedArray())
+
 private val Process.text: String get() = inputStream.bufferedReader().readText().trim()
+
 private val String.executeWithText: String?
     get() {
         val process = execute

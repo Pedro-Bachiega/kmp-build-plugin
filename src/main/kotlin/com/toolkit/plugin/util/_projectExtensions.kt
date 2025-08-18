@@ -12,8 +12,6 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.publish.PublishingExtension
-import org.gradle.api.publish.maven.plugins.MavenPublishPlugin
-import org.gradle.plugin.devel.GradlePluginDevelopmentExtension
 import org.gradle.plugins.signing.SigningExtension
 import org.gradle.testing.jacoco.plugins.JacocoPluginExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
@@ -27,11 +25,6 @@ internal val Project.kotlinAndroid: KotlinAndroidProjectExtension?
 internal val Project.kotlinMultiplatform: KotlinMultiplatformExtension?
     get() = extensions.findByType(KotlinMultiplatformExtension::class.java)
 // endregion JetBrains
-
-// region Gradle
-internal val Project.gradlePlugin: GradlePluginDevelopmentExtension?
-    get() = extensions.findByType(GradlePluginDevelopmentExtension::class.java)
-// endregion Gradle
 
 internal val Project.libs: VersionCatalog
     @Throws(IllegalStateException::class)

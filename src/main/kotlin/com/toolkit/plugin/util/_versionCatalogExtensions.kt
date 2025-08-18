@@ -10,7 +10,7 @@ internal fun VersionCatalog.version(alias: String) =
 internal val VersionCatalog.allDefinedDependencies: List<String>
     get() = libraryAliases.map(::findLibrary).mapNotNull { library ->
         library.getOrNull()?.get()?.run {
-            versionConstraint.requiredVersion.takeIf { it.isNullOrBlank().not() }
+            versionConstraint.requiredVersion.takeUnless(String::isBlank)
                 ?.let { version -> "${module.group}:${module.name}:$version" }
         }
     }.toList()

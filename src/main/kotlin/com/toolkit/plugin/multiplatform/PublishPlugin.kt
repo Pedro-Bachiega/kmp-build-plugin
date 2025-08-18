@@ -2,7 +2,6 @@ package com.toolkit.plugin.multiplatform
 
 import com.toolkit.plugin.util.artifactPrefixProperty
 import com.toolkit.plugin.util.attachAllTasksIntoAssembleRelease
-import com.toolkit.plugin.util.createLocalPathRepository
 import com.toolkit.plugin.util.libs
 import com.toolkit.plugin.util.publishing
 import com.toolkit.plugin.util.requireAll
@@ -23,7 +22,7 @@ internal class PublishPlugin : Plugin<Project> {
         plugins.apply(libs.findPlugin("vanniktech-publish").get().get().pluginId)
 
         version = versionName
-        publishing.repositories { createLocalPathRepository(target) }
+        publishing.repositories { mavenLocal() }
 
         // Setup publishing
         with(vanniktechPublishing) {

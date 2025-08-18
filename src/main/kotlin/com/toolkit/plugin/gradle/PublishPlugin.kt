@@ -2,7 +2,6 @@ package com.toolkit.plugin.gradle
 
 import com.toolkit.plugin.util.applyPlugins
 import com.toolkit.plugin.util.artifactPrefixProperty
-import com.toolkit.plugin.util.createLocalPathRepository
 import com.toolkit.plugin.util.libs
 import com.toolkit.plugin.util.publishing
 import com.toolkit.plugin.util.vanniktechPublishing
@@ -27,7 +26,7 @@ internal class PublishPlugin : Plugin<Project> {
         }
 
         with(publishing) {
-            repositories { createLocalPathRepository(target) }
+            repositories { mavenLocal() }
             publications {
                 create<MavenPublication>("default") {
                     from(components["java"])

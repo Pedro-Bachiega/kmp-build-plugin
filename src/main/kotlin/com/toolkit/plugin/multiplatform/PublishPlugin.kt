@@ -34,7 +34,7 @@ internal class PublishPlugin : Plugin<Project> {
                 KotlinMultiplatform(
                     javadocJar = JavadocJar.Empty(),
                     sourcesJar = true,
-                    androidVariantsToPublish = listOf("debug", "release")
+                    androidVariantsToPublish = listOf("release")
                 )
             )
         }

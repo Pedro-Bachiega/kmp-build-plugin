@@ -123,6 +123,6 @@ internal class LibraryPlugin : Plugin<Project> {
 //        }
 //
 //        mingwX64()
-//        applyDefaultHierarchyTemplate()
+        applyDefaultHierarchyTemplate()
     }
 }

@@ -25,9 +25,7 @@ internal class ApplicationPlugin : Plugin<Project> {
                 commonWebpackConfig {
                     outputFileName = "browserApp.js"
                     devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
-                        static = (static ?: mutableListOf()).apply {
-                            add(project.projectDir.path)
-                        }
+                        static(project.projectDir.path)
                     }
                 }
             }

@@ -2,6 +2,8 @@ package com.toolkit.plugin.multiplatform
 
 import com.android.build.api.dsl.LibraryExtension
 import com.toolkit.plugin.commonSetup
+import com.toolkit.plugin.util.Config
+import com.toolkit.plugin.util.Target
 import com.toolkit.plugin.util.androidLibrary
 import com.toolkit.plugin.util.applyPlugins
 import com.toolkit.plugin.util.kotlinMultiplatform
@@ -9,6 +11,7 @@ import com.toolkit.plugin.util.libs
 import com.toolkit.plugin.util.projectJavaTarget
 import com.toolkit.plugin.util.projectJavaVersionCode
 import com.toolkit.plugin.util.version
+import kotlinx.serialization.json.Json
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
@@ -68,61 +71,93 @@ internal class LibraryPlugin : Plugin<Project> {
     }
 
     private fun Project.setupTargets(kotlin: KotlinMultiplatformExtension) = with(kotlin) {
-        androidLibrary?.let { setupAndroid(it, kotlin) }
-
-//        wasmJs()
-//        wasmWasi()
-
-        jvm()
-//        js(IR) {
-//            this.nodejs()
-//            binaries.executable() // not applicable to BOTH, see details below
-//        }
-        androidTarget {
-            publishLibraryVariants("release")
+        val configFile = project.file("module-config.json")
+        val targets = if (configFile.exists()) {
+            Json.decodeFromString<Config>(configFile.readText()).targets
+        } else {
+            listOf(Target.Android, Target.Jvm) // Default targets
         }
-//        androidNativeArm32()
-//        androidNativeArm64()
-//        androidNativeX86()
-//        androidNativeX64()
 
-//        iosArm64()
-//        iosX64()
-//        iosSimulatorArm64()
-//        watchosArm32()
-//        watchosArm64()
-//        watchosX64()
-//        watchosSimulatorArm64()
-//        tvosArm64()
-//        tvosX64()
-//        tvosSimulatorArm64()
-//        macosX64()
-//        macosArm64()
-//        linuxX64 {
-//            binaries {
-//                executable()
-//            }
-//        }
-//        linuxArm64 {
-//            binaries {
-//                executable()
-//            }
-//        }
-//        listOf(
-//            iosX64(),
-//            iosArm64(),
-//            iosSimulatorArm64(),
-//            watchosArm32(),
-//            watchosArm64(),
-//            watchosSimulatorArm64(),
-//            tvosArm64(),
-//            tvosX64(),
-//            tvosSimulatorArm64(),
-//        ).forEach {
-//            it.binaries.framework { baseName = "library" }
-//        }
-//
-//        mingwX64()
+        if (targets.contains(Target.Android)) {
+            androidLibrary?.let { setupAndroid(it, kotlin) }
+            androidTarget {
+                publishLibraryVariants("release")
+            }
+        }
+        if (targets.contains(Target.Jvm)) {
+            jvm()
+        }
+        if (targets.contains(Target.Js)) {
+            js(IR) {
+                browser()
+            }
+        }
+        if (targets.contains(Target.WasmJs)) {
+            wasmJs {
+                browser()
+            }
+        }
+        if (targets.contains(Target.WasmWasi)) {
+             wasmWasi()
+        }
+        if (targets.contains(Target.AndroidNativeArm32)) {
+            androidNativeArm32()
+        }
+        if (targets.contains(Target.AndroidNativeArm64)) {
+            androidNativeArm64()
+        }
+        if (targets.contains(Target.AndroidNativeX86)) {
+            androidNativeX86()
+        }
+        if (targets.contains(Target.AndroidNativeX64)) {
+            androidNativeX64()
+        }
+        if (targets.contains(Target.IosArm64)) {
+            iosArm64()
+        }
+        if (targets.contains(Target.IosX64)) {
+            iosX64()
+        }
+        if (targets.contains(Target.IosSimulatorArm64)) {
+            iosSimulatorArm64()
+        }
+        if (targets.contains(Target.WatchosArm32)) {
+            watchosArm32()
+        }
+        if (targets.contains(Target.WatchosArm64)) {
+            watchosArm64()
+        }
+        if (targets.contains(Target.WatchosX64)) {
+            watchosX64()
+        }
+        if (targets.contains(Target.WatchosSimulatorArm64)) {
+            watchosSimulatorArm64()
+        }
+        if (targets.contains(Target.TvosArm64)) {
+            tvosArm64()
+        }
+        if (targets.contains(Target.TvosX64)) {
+            tvosX64()
+        }
+        if (targets.contains(Target.TvosSimulatorArm64)) {
+            tvosSimulatorArm64()
+        }
+        if (targets.contains(Target.MacosX64)) {
+            macosX64()
+        }
+        if (targets.contains(Target.MacosArm64)) {
+            macosArm64()
+        }
+        if (targets.contains(Target.LinuxX64)) {
+            linuxX64()
+        }
+        if (targets.contains(Target.LinuxArm64)) {
+            linuxArm64()
+        }
+        if (targets.contains(Target.MingwX64)) {
+            mingwX64()
+        }
+
         applyDefaultHierarchyTemplate()
     }
 }

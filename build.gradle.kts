@@ -2,6 +2,7 @@ plugins {
     id("java-gradle-plugin")
     alias(libs.plugins.jetbrains.kotlin.jvm)
     alias(libs.plugins.jetbrains.kotlin.dsl)
+    alias(libs.plugins.jetbrains.serialization)
 
     alias(libs.plugins.lint.detekt)
     alias(libs.plugins.lint.ktlint)
@@ -16,6 +17,8 @@ version = "1.0.0"
 
 dependencies {
     compileOnly(gradleApi())
+
+    implementation(libs.jetbrains.serialization)
 
     implementation(libs.plugin.androidx.plugin)
     implementation(libs.plugin.lint.detekt)

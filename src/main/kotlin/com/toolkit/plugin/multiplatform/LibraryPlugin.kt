@@ -12,6 +12,7 @@ import com.toolkit.plugin.util.projectJavaTarget
 import com.toolkit.plugin.util.projectJavaVersionCode
 import com.toolkit.plugin.util.version
 import kotlinx.serialization.json.Json
+import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
@@ -71,11 +72,27 @@ internal class LibraryPlugin : Plugin<Project> {
     }
 
     private fun Project.setupTargets(kotlin: KotlinMultiplatformExtension) = with(kotlin) {
-        val configFile = project.file("module-config.json")
-        val targets = if (configFile.exists()) {
-            Json.decodeFromString<Config>(configFile.readText()).targets
-        } else {
-            listOf(Target.Android, Target.Jvm) // Default targets
+        var targets = emptySet<Target>()
+
+        val projectConfigFile = rootProject.file("project-config.json")
+        if (projectConfigFile.exists()) {
+            targets = Json.decodeFromString<Config>(projectConfigFile.readText()).targets.toSet()
+        }
+
+        val moduleConfigFile = project.file("module-config.json")
+        if (moduleConfigFile.exists()) {
+            val moduleConfig = Json.decodeFromString<Config>(moduleConfigFile.readText())
+            if (moduleConfig.targets.isNotEmpty()) {
+                targets = moduleConfig.targets.toSet()
+            }
+        }
+
+        if (targets.isEmpty()) {
+            throw GradleException(
+                "No targets configured for project '$displayName'. " +
+                        "Please create a 'project-config.json' at the project root " +
+                        "or a 'module-config.json' in the module directory to specify the targets."
+            )
         }
 
         if (targets.contains(Target.Android)) {
@@ -98,7 +115,7 @@ internal class LibraryPlugin : Plugin<Project> {
             }
         }
         if (targets.contains(Target.WasmWasi)) {
-             wasmWasi()
+            wasmWasi()
         }
         if (targets.contains(Target.AndroidNativeArm32)) {
             androidNativeArm32()

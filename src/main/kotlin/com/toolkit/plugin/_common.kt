@@ -2,7 +2,8 @@ package com.toolkit.plugin
 
 import com.android.build.api.dsl.CommonExtension
 import com.toolkit.plugin.util.projectJavaVersion
-import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.gradle.api.Project
+import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 
 internal fun CommonExtension<*, *, *, *, *, *>.commonSetup() {
     buildFeatures.buildConfig = true
@@ -21,10 +22,28 @@ internal fun CommonExtension<*, *, *, *, *, *>.commonSetup() {
     }
 }
 
-internal fun setupDefaultDependencies(kotlin: KotlinMultiplatformExtension) =
-    kotlin.sourceSets.all {
-        languageSettings {
-            optIn("androidx.compose.material3.ExperimentalMaterial3Api")
-            optIn("org.jetbrains.compose.resources.ExperimentalResourceApi")
+internal fun Project.setupKsp(kotlinExtension: KotlinProjectExtension) {
+    plugins.withId("com.google.devtools.ksp") {
+        val kspMetadata = tasks.findByName("kspCommonMainKotlinMetadata")
+        val compileMetadata = tasks.findByName("compileCommonMainKotlinMetadata")
+        if (kspMetadata != null && compileMetadata != null) {
+            compileMetadata.dependsOn(kspMetadata)
+        }
+
+        val kspJvm = tasks.findByName("kspKotlinJvm")
+        val compileJvm = tasks.findByName("compileKotlinJvm")
+        if (compileJvm != null) {
+            kspMetadata?.let { compileJvm.dependsOn(it) }
+            kspJvm?.let { compileJvm.dependsOn(it) }
         }
     }
+
+    kotlinExtension.sourceSets.all {
+        kotlin.srcDir(
+            "${layout.buildDirectory.get()}/generated/ksp/metadata/commonMain/kotlin"
+        )
+        kotlin.srcDir(
+            "${layout.buildDirectory.get()}/generated/ksp/metadata/${this.name}/kotlin"
+        )
+    }
+}

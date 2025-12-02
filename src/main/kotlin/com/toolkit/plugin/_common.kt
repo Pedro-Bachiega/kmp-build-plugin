@@ -38,12 +38,9 @@ internal fun Project.setupKsp(kotlinExtension: KotlinProjectExtension) {
         }
     }
 
-    kotlinExtension.sourceSets.all {
+    kotlinExtension.sourceSets.named("commonMain") {
         kotlin.srcDir(
             "${layout.buildDirectory.get()}/generated/ksp/metadata/commonMain/kotlin"
-        )
-        kotlin.srcDir(
-            "${layout.buildDirectory.get()}/generated/ksp/metadata/${this.name}/kotlin"
         )
     }
 }

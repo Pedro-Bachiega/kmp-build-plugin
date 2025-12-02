@@ -34,6 +34,7 @@ internal class ApplicationPlugin : Plugin<Project> {
         kotlin.compilerOptions { jvmTarget.set(projectJavaTarget) }
 
         setup(android, kotlin)
+        setupKsp(kotlin)
 
         plugins.apply("plugin-lint")
         plugins.apply("plugin-test")
@@ -70,7 +71,6 @@ internal class ApplicationPlugin : Plugin<Project> {
 
         // Common Setup
         commonSetup()
-        setupKsp(kotlin)
 
         sourceSets {
             maybeCreate("main").java.srcDirs("src/main/kotlin")

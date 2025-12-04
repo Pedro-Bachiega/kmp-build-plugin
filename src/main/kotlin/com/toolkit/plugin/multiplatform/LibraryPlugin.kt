@@ -34,6 +34,7 @@ internal class LibraryPlugin : Plugin<Project> {
 
         plugins.apply("plugin-lint")
         plugins.apply("plugin-optimize")
+        plugins.apply("plugin-test")
     }
 
     private fun Project.setupAndroid(

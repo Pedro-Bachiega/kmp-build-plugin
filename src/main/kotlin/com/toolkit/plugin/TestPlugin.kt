@@ -19,10 +19,20 @@ internal class TestPlugin : Plugin<Project> {
         applyPlugins("jetbrains-kover")
 
         // Kover configuration
+        kover.reports {
+            filters {
+                excludes {
+                    androidGeneratedClasses()
+                    annotatedBy("*KoverExcludes*", "*Composable*")
+                }
+            }
+        }
         kover.currentProject {
             createVariant("combined") {
+                val isAndroid = (androidApplication ?: androidLibrary) != null
                 val flavors = androidApplication?.productFlavors ?: androidLibrary?.productFlavors
-                flavors?.forEach { add("${it.name}Debug") } ?: add("debug")
+                flavors?.forEach { add("${it.name}Debug") }
+                    ?: run { if (isAndroid) add("debug") }
 
                 if (plugins.hasPlugin("plugin-desktop-application") || plugins.hasPlugin("plugin-multiplatform-library")) {
                     add("jvm")

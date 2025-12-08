@@ -2,7 +2,6 @@ package com.toolkit.plugin.multiplatform
 
 import com.android.build.api.dsl.LibraryExtension
 import com.toolkit.plugin.commonSetup
-import com.toolkit.plugin.setupKsp
 import com.toolkit.plugin.util.Config
 import com.toolkit.plugin.util.Target
 import com.toolkit.plugin.util.androidLibrary
@@ -49,7 +48,6 @@ internal class LibraryPlugin : Plugin<Project> {
 
         // Common Setup
         commonSetup()
-        setupKsp(kotlin)
 
         compileSdk = libs.version("build-sdk-compile").toInt()
         buildToolsVersion = libs.version("build-tools")

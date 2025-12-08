@@ -1,6 +1,5 @@
 package com.toolkit.plugin.desktop
 
-import com.toolkit.plugin.setupKsp
 import com.toolkit.plugin.util.applyPlugins
 import com.toolkit.plugin.util.kotlinMultiplatform
 import com.toolkit.plugin.util.projectJavaVersionCode
@@ -21,7 +20,6 @@ internal class ApplicationPlugin : Plugin<Project> {
         kotlinMultiplatform?.run {
             applyDefaultHierarchyTemplate()
             jvm()
-            setupKsp(this)
         }
 
         plugins.apply("plugin-lint")

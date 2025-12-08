@@ -4,7 +4,6 @@ package com.toolkit.plugin.android
 
 import com.android.build.api.dsl.ApplicationExtension
 import com.toolkit.plugin.commonSetup
-import com.toolkit.plugin.setupKsp
 import com.toolkit.plugin.util.androidApplication
 import com.toolkit.plugin.util.applyPlugins
 import com.toolkit.plugin.util.kotlinAndroid
@@ -14,7 +13,6 @@ import com.toolkit.plugin.util.projectJavaVersionCode
 import com.toolkit.plugin.util.version
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 
 internal class ApplicationPlugin : Plugin<Project> {
 
@@ -33,18 +31,14 @@ internal class ApplicationPlugin : Plugin<Project> {
         kotlin.jvmToolchain(projectJavaVersionCode)
         kotlin.compilerOptions { jvmTarget.set(projectJavaTarget) }
 
-        setup(android, kotlin)
-        setupKsp(kotlin)
+        setup(android)
 
         plugins.apply("plugin-lint")
         plugins.apply("plugin-test")
         plugins.apply("plugin-optimize")
     }
 
-    private fun Project.setup(
-        android: ApplicationExtension,
-        kotlin: KotlinAndroidProjectExtension
-    ) = with(android) {
+    private fun Project.setup(android: ApplicationExtension) = with(android) {
         // Exclusive Application Configurations
         compileSdk = libs.version("build-sdk-compile").toInt()
         buildToolsVersion = libs.version("build-tools")

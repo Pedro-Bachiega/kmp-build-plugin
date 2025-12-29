@@ -4,6 +4,7 @@ package com.toolkit.plugin.android
 
 import com.android.build.api.dsl.ApplicationExtension
 import com.toolkit.plugin.commonSetup
+import com.toolkit.plugin.setupOptIns
 import com.toolkit.plugin.util.androidApplication
 import com.toolkit.plugin.util.applyPlugins
 import com.toolkit.plugin.util.kotlinAndroid
@@ -30,7 +31,7 @@ internal class ApplicationPlugin : Plugin<Project> {
 
         kotlin.jvmToolchain(projectJavaVersionCode)
         kotlin.compilerOptions { jvmTarget.set(projectJavaTarget) }
-
+        kotlin.setupOptIns()
         setup(android)
 
         plugins.apply("plugin-lint")

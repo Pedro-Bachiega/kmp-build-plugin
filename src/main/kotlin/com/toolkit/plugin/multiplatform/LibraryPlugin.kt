@@ -1,12 +1,11 @@
 package com.toolkit.plugin.multiplatform
 
-import com.android.build.api.dsl.LibraryExtension
-import com.toolkit.plugin.commonSetup
+import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
 import com.toolkit.plugin.setupOptIns
 import com.toolkit.plugin.util.Config
 import com.toolkit.plugin.util.Target
-import com.toolkit.plugin.util.androidLibrary
 import com.toolkit.plugin.util.applyPlugins
+import com.toolkit.plugin.util.getPluginId
 import com.toolkit.plugin.util.kotlinMultiplatform
 import com.toolkit.plugin.util.libs
 import com.toolkit.plugin.util.projectJavaTarget
@@ -16,6 +15,7 @@ import kotlinx.serialization.json.Json
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.plugins.ExtensionAware
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.kotlinExtension
@@ -24,51 +24,60 @@ import org.jetbrains.kotlin.gradle.dsl.kotlinExtension
 internal class LibraryPlugin : Plugin<Project> {
     override fun apply(target: Project): Unit = with(target) {
         applyPlugins(
-            "android-library",
             "jetbrains-kotlin-multiplatform",
+            "android-kotlin-multiplatform-library",
             "jetbrains-serialization",
         )
 
         kotlinExtension.jvmToolchain(projectJavaVersionCode)
         target.setupTargets(kotlinMultiplatform ?: return@with)
+        plugins.withId(libs.getPluginId("google-ksp")) {
+            tasks.matching { it.name == "extractAndroidMainAnnotations" }.configureEach {
+                dependsOn(
+                    tasks.matching { task ->
+                        task.name == "kspCommonMainKotlinMetadata" || task.name == "kspAndroidMain"
+                    }
+                )
+            }
+        }
 
         plugins.apply("plugin-lint")
         plugins.apply("plugin-optimize")
     }
 
     private fun Project.setupAndroid(
-        android: LibraryExtension,
-        kotlin: KotlinMultiplatformExtension
+        android: KotlinMultiplatformAndroidLibraryTarget
     ) = with(android) {
-        kotlin.androidTarget().compilations.all {
-            compileTaskProvider.configure {
-                compilerOptions.jvmTarget.set(projectJavaTarget)
-            }
+        withJava()
+        compilations.all {
+            compileTaskProvider.configure { compilerOptions.jvmTarget.set(projectJavaTarget) }
         }
-
-        // Common Setup
-        commonSetup()
 
         compileSdk = libs.version("build-sdk-compile").toInt()
         buildToolsVersion = libs.version("build-tools")
+        minSdk = libs.version("build-sdk-min-toolkit").toInt()
 
-        // Exclusive Library Configurations
-        defaultConfig {
-            minSdk = libs.version("build-sdk-min-toolkit").toInt()
+        androidResources.noCompress.add("")
+        packaging.resources.excludes.add("META-INF/LICENSE")
+        packaging.resources.pickFirsts.add("protobuf.meta")
+        packaging.jniLibs.keepDebugSymbols.addAll(setOf("*/mips/*.so", "*/mips64/*.so"))
 
-            consumerProguardFiles("consumer-proguard-rules.pro")
-            testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        listOf("consumer-rules.pro", "consumer-proguard-rules.pro")
+            .firstOrNull { file(it).exists() }
+            ?.let {
+                optimization.consumerKeepRules.publish = true
+                optimization.consumerKeepRules.file(it)
+            }
+
+        withHostTest {
+            isIncludeAndroidResources = true
+            isReturnDefaultValues = true
         }
 
-        sourceSets {
-            maybeCreate("main").apply {
-                java.srcDirs("src/androidMain/kotlin")
-                res.srcDirs("src/androidMain/res")
-                resources.srcDirs("src/commonMain/resources")
-            }
-            maybeCreate("test").java.srcDirs("src/test/kotlin")
-            maybeCreate("androidTest").java.srcDirs("src/androidTest/kotlin")
-            maybeCreate("androidTest").resources.srcDirs("src/androidTest/res")
+        withDeviceTestBuilder {
+            sourceSetTreeName = "test"
+        }.configure {
+            instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         }
     }
 
@@ -99,10 +108,10 @@ internal class LibraryPlugin : Plugin<Project> {
         setupOptIns()
 
         if (targets.contains(Target.Android)) {
-            androidLibrary?.let { setupAndroid(it, kotlin) }
-            androidTarget {
-                publishLibraryVariants("release")
-            }
+            val android = (this as ExtensionAware)
+                .extensions
+                .getByType(KotlinMultiplatformAndroidLibraryTarget::class.java)
+            setupAndroid(android)
         }
         if (targets.contains(Target.Jvm)) {
             jvm()

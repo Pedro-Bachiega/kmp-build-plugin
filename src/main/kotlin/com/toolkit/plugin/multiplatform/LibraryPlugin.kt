@@ -25,7 +25,7 @@ internal class LibraryPlugin : Plugin<Project> {
     override fun apply(target: Project): Unit = with(target) {
         applyPlugins(
             "jetbrains-kotlin-multiplatform",
-            "android-kotlin-multiplatform-library",
+            "android-library",
             "jetbrains-serialization",
         )
 
